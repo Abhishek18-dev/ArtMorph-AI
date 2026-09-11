@@ -1,0 +1,146 @@
+python train.py --experiment=exp2
+
+
+conda install torchvision    
+
+
+conda list      
+conda env list      
+
+conda deactivate
+conda activate .nst
+
+C:\Users\Abhishek\anaconda3\Scripts\activate && conda activate .nst
+
+
+
+python train.py --batch-size=4 --epochs=10 --experiment=exp2
+
+python train.py --batch-size=4 --epochs=10 --experiment=bigdataset --content_dir='' --style_dir=''
+
+python train.py --batch-size=10 --epochs=160 --experiment=finaltraining_bigdataset --content_dir='' --style_dir=''
+
+python train.py --batch-size=10 --epochs=100 --style_weight=10 --final_size=512 --experiment=resumedfinaltraining_bigdataset --content_dir='' --style_dir='' --resume=True
+
+160 train - stop training - start resume traing -  change style weight 5 to 10 - change size of final image from 256 to 512 - start training again for 80 to 100 epochs
+
+
+
+
+
+
+
+
+
+
+============================================================================
+
+
+
+STAGE 1 — 256 × 256, Style Weight 5
+Batch size = 4
+
+Run this:
+
+%cd /content
+
+!python train.py \
+  --batch_size=4 \
+  --epochs=160 \
+  --experiment=adain_main \
+  --final_size=256 \
+  --content_size=512 \
+  --style_size=512 \
+  --content_weight=1.0 \
+  --style_weight=5.0 \
+  --content_dir="/content/content_data/test2017" \
+  --style_dir="/content/style_data/train_3" \
+  --vgg="/content/vgg_normalised.pth"
+
+                   --------------------------------------------
+
+IF COLAB STOPS DURING STAGE 1 : RESUME TRAINING FROM LAST CHECKPOINT
+
+New session mein dataset/code setup karne ke baad don't change anything.
+
+Run:
+
+%cd /content
+
+!python train.py \
+  --batch_size=4 \
+  --epochs=160 \
+  --experiment=adain_main \
+  --final_size=256 \
+  --content_size=512 \
+  --style_size=512 \
+  --content_weight=1.0 \
+  --style_weight=5.0 \
+  --content_dir="/content/content_data/test2017" \
+  --style_dir="/content/style_data/train_3" \
+  --vgg="/content/vgg_normalised.pth" \
+  --resume
+
+
+
+
+
+
+
+
+  ===============================================================
+
+
+STAGE 2 — 512 × 512 + Style Weight 10
+
+Now we resume from the Stage-1 model but change:
+
+final_size:    256 → 512
+style_weight:  5 → 10
+
+
+%cd /content
+
+!python train.py \
+  --batch_size=2 \
+  --epochs=260 \
+  --experiment=adain_main \
+  --final_size=512 \
+  --content_size=512 \
+  --style_size=512 \
+  --content_weight=1.0 \
+  --style_weight=10.0 \
+  --content_dir="/content/content_data/test2017" \
+  --style_dir="/content/style_data/train_3" \
+  --vgg="/content/vgg_normalised.pth" \
+  --resume
+
+
+
+
+
+                      ----------------------------------------------
+
+
+
+IF COLAB STOPS DURING STAGE 2 : RESUME TRAINING FROM LAST CHECKPOINT
+
+New session mein dataset/code setup karne ke baad don't change anything.
+
+Run:
+
+%cd /content
+
+!python train.py \
+  --batch_size=2 \
+  --epochs=260 \
+  --experiment=adain_main \
+  --final_size=512 \
+  --content_size=512 \
+  --style_size=512 \
+  --content_weight=1.0 \
+  --style_weight=10.0 \
+  --content_dir="/content/content_data/test2017" \
+  --style_dir="/content/style_data/train_3" \
+  --vgg="/content/vgg_normalised.pth" \
+  --resume
