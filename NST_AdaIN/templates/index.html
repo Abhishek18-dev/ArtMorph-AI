@@ -562,7 +562,7 @@
                     </div>
                 </div>
                 <div class="text-center mt-5">
-                    {{ form.submit(class="btn btn-primary shadow-lg btn-glow") }}
+                    {{ form.submit(class="btn btn-primary shadow-lg btn-glow", id="transferBtn") }}
                 </div>
             </div>
         </div>
@@ -908,6 +908,16 @@
 
 
     }
+
+    document.getElementById('uploadForm').addEventListener('submit', function () {
+        const button = document.getElementById('transferBtn');
+        const loader = document.getElementById('loader');
+
+        button.disabled = true;
+        button.innerHTML = '⏳ Processing...';
+
+        loader.classList.add('active');
+    });
 </script>
 </body>
 </html>

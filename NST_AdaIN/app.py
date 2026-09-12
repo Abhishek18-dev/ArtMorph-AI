@@ -81,27 +81,30 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 def style_transfer(content_image, style_image, encoder, decoder, alpha, device):
-    content_transform = transforms.Compose([
-        transforms.Resize((512, 512)),
-        transforms.ToTensor()
-    ])
 
-    # for render
+    #For GPU
     # content_transform = transforms.Compose([
-    #     transforms.Resize((256, 256)),
+    #     transforms.Resize((512, 512)),
     #     transforms.ToTensor()
     # ])
 
-    style_transform = transforms.Compose([
-        transforms.Resize((512, 512)),
+    # for render CPU
+    content_transform = transforms.Compose([
+        transforms.Resize((256, 256)),
         transforms.ToTensor()
     ])
 
-    #for render
+    # FOR GPU
     # style_transform = transforms.Compose([
-    #     transforms.Resize((256, 256)),
+    #     transforms.Resize((512, 512)),
     #     transforms.ToTensor()
     # ])
+
+    #for render CPU
+    style_transform = transforms.Compose([
+        transforms.Resize((256, 256)),
+        transforms.ToTensor()
+    ])
 
     content_image = content_transform(content_image).unsqueeze(0).to(device)  # unsqueeze used to do the 0 because the model expects a batch dimension so earlier we added a batch dimension to the content image using unsqueeze(0) and now why we are doing unsqueeze(0) to the style image is because the model expects a batch dimension for both content and style images. The model is designed to process batches of images, even if we are only passing a single image. By adding a batch dimension, we ensure that the input shape matches what the model expects, which is typically (batch_size, channels, height, width). In this case, unsqueeze(0) adds a new dimension at the 0th index, effectively creating a batch of size 1 for both content and style images.
     style_image = style_transform(style_image).unsqueeze(0).to(device)
