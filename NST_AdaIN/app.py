@@ -21,7 +21,7 @@ app = Flask(__name__)
 BASE_DIR = Path(__file__).resolve().parent
 app.config['SECRET_KEY'] = 'supersecretkey'
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
-app.config['ALLOWED_EXTENTIONS'] = {'png', 'jpg', 'jpeg'}
+app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif', 'bmp', 'tiff', 'webp'}
 Bootstrap(app)
 
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -78,7 +78,7 @@ encoder.eval()
 decoder.eval()
 
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENTIONS']
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 def style_transfer(content_image, style_image, encoder, decoder, alpha, device):
     content_transform = transforms.Compose([
@@ -146,56 +146,81 @@ def index():
     error= None
 
     if form.validate_on_submit():
+        print("✅ FORM VALIDATED")
+        # print("CONTENT:", form.content.data)
+        # print("CONTENT FILENAME:", form.content.data.filename if form.content.data else None)
+        # print("STYLE:", form.style.data)
+        # print("STYLE FILENAME:", form.style.data.filename if form.style.data else None)
+
         if form.content.data and form.content.data.filename:
             if allowed_file(form.content.data.filename):
                 content_filename = secure_filename(form.content.data.filename)
-                form.content.data.save(os.path.join(app.config['UPLOAD_FOLDER'], content_filename))
+                form.content.data.save(
+                    os.path.join(app.config['UPLOAD_FOLDER'], content_filename)
+                )
                 form.content_path.data = content_filename
-
         else:
             content_filename = form.content_path.data
 
         if form.style.data and form.style.data.filename:
             if allowed_file(form.style.data.filename):
                 style_filename = secure_filename(form.style.data.filename)
-                form.style.data.save(os.path.join(app.config['UPLOAD_FOLDER'], style_filename))
+                form.style.data.save(
+                    os.path.join(app.config['UPLOAD_FOLDER'], style_filename)
+                )
                 form.style_path.data = style_filename
-
         else:
             style_filename = form.style_path.data
 
         if content_filename and style_filename:
-            content_path = os.path.join(app.config['UPLOAD_FOLDER'], content_filename)
-            style_path = os.path.join(app.config['UPLOAD_FOLDER'], style_filename)
+            print("✅ BOTH FILES SAVED")
+            # print("Content path:", content_filename)
+            # print("Style path:", style_filename)
+
+            content_path = os.path.join(
+                app.config['UPLOAD_FOLDER'], content_filename
+            )
+            style_path = os.path.join(
+                app.config['UPLOAD_FOLDER'], style_filename
+            )
 
             try:
                 content_image = Image.open(content_path).convert('RGB')
                 style_image = Image.open(style_path).convert('RGB')
 
                 alpha = float(form.alpha.data)
-                stylized_image = style_transfer(content_image , style_image , encoder , decoder , alpha , device)
-                
-                result_filename = f'stylized_{content_filename}'
-                result_path = os.path.join(app.config['UPLOAD_FOLDER'], result_filename)
 
-                save_image(stylized_image , result_path)
+                print("🚀 STARTING STYLE TRANSFER")
+
+                stylized_image = style_transfer( content_image, style_image, encoder, decoder, alpha, device
+                )
+
+                print("✅ STYLE TRANSFER COMPLETED")
+
+                result_filename = f'stylized_{content_filename}'
+                result_path = os.path.join(
+                    app.config['UPLOAD_FOLDER'], result_filename
+                )
+
+                save_image(stylized_image, result_path)
+
+                print("✅ RESULT SAVED:", result_path)
 
                 result_image = result_filename
 
-
-
-
-
-
             except Exception as e:
+                print("❌ STYLE TRANSFER ERROR:", repr(e))
                 error = f"An error occurred during style transfer: {str(e)}"
 
     
     else:
-        if not content_filename:
-            error = "Please upload a content image."
-        if not style_filename:
-            error = "Please upload a style image."
+        print("❌ FORM VALIDATION FAILED")
+        print("ERRORS:", form.errors)
+        if request.method == 'POST':
+            if not content_filename:
+                error = "Please upload a content image."
+            elif not style_filename:
+                error = "Please upload a style image."
 
 
 
