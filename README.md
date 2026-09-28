@@ -207,11 +207,6 @@ python train.py --batch_size=2 --epochs=200 --experiment=adain_main --final_size
 
 *(Pre-saved example pairs are available in [`NST_AdaIN/static/examples/`](file:///c:/Users/Abhishek/ArtMorph-AI/NST_AdaIN/static/examples/))*
 
-### UI Preview
-| Flask Cyberpunk Interface | Streamlit Studio |
-| :---: | :---: |
-| `docs/screenshots/flask_ui.png` | `docs/screenshots/streamlit_ui.png` |
-
 ---
 
 ## ☁️ Deployment
